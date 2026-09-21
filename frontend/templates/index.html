@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Mindify – Smart Affirmation Generator</title>
+  <meta name="description"
+        content="Mindify is a local, privacy-first NLP app that transforms your goals into powerful affirmations, implementation intentions, and daily micro-actions." />
+  <meta name="theme-color" content="#4f46e5" />
+
+  <!-- Favicon (inline SVG data URI – no external assets needed) -->
+  <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header>
+      <h1>✨ Mindify</h1>
+      <p class="tagline">
+        Turn your goals into science-backed affirmations.
+      </p>
+    </header>
+
+    <!-- ── Tab Navigation ──────────────────────────────────── -->
+    <nav class="tabs" aria-label="Main Navigation">
+      <button id="tabGenerate" class="tab-btn active" type="button">
+        ⚡ Generator
+      </button>
+      <button id="tabHistory" class="tab-btn" type="button">
+        📜 History &amp; Trends
+      </button>
+    </nav>
+
+    <!-- ── Generator View ──────────────────────────────────── -->
+    <div id="generatorView">
+      <!-- Input Card -->
+      <section class="card" aria-labelledby="input-label">
+        <div class="section-label" id="input-label">
+          <span class="icon">🎯</span>
+          Your Goal or Manifestation
+        </div>
+
+        <div class="input-group">
+          <textarea
+            id="manifestation-input"
+            name="manifestation"
+            rows="5"
+            maxlength="1000"
+            placeholder="e.g. I want to build a consistent morning exercise routine…"
+            aria-label="Describe your goal or manifestation"
+            aria-required="true"
+            spellcheck="true"
+          ></textarea>
+
+          <!-- Error banner (shown by JS on validation / server errors) -->
+          <div id="error-banner" aria-live="assertive" aria-atomic="true">
+            <span aria-hidden="true">⚠️</span>
+            <span id="error-message"></span>
+          </div>
+
+          <div class="button-row">
+            <button id="generate-btn"
+                    type="button"
+                    aria-label="Generate affirmations from your goal">
+              <!-- Normal state -->
+              <span class="btn-icon" aria-hidden="true">🚀</span>
+              <span class="btn-text">Mindify It!</span>
+              <!-- Loading state -->
+              <div class="spinner" aria-hidden="true"></div>
+            </button>
+
+            <button id="devModeToggle" class="btn-secondary" type="button" aria-label="Toggle NLP Developer Inspector">
+              🐛 Toggle NLP Inspector
+            </button>
+          </div>
+
+          <p style="font-size:0.78rem; color: var(--color-muted); text-align:center; margin-top:-0.1rem;">
+            Tip: press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate
+          </p>
+        </div>
+      </section>
+
+      <!-- Output Section (hidden until JS populates it) -->
+      <section id="output-section"
+               class="card"
+               aria-labelledby="output-heading"
+               aria-live="polite"
+               aria-atomic="false">
+
+        <h2 class="output-header" id="output-heading">
+          🌟 Your Mindify Results
+        </h2>
+
+        <div class="output-blocks">
+          <!-- Block 1: Original Goal -->
+          <div class="output-block block-goal" role="region" aria-label="Original Goal">
+            <div class="block-label">
+              <span class="blk-icon">🎯</span>
+              Original Goal
+            </div>
+            <p class="block-content" id="out-original-goal"></p>
+          </div>
+
+          <!-- Block 2: Generated Affirmation -->
+          <div class="output-block block-affirmation" role="region" aria-label="Generated Affirmation">
+            <div class="block-label">
+              <span class="blk-icon">💬</span>
+              Generated Affirmation
+            </div>
+            <p class="block-content" id="out-affirmation"></p>
+          </div>
+        </div><!-- /.output-blocks -->
+
+        <!-- Developer Mode Inspector Panel -->
+        <div id="nlpInspector" class="hidden terminal-box" role="region" aria-label="NLP Engine Diagnostics">
+          <h3>🖥️ NLP Engine Diagnostics</h3>
+          <pre id="nlpDebugOutput"></pre>
+        </div>
+      </section><!-- /#output-section -->
+    </div><!-- /#generatorView -->
+
+    <!-- ── History & Trends View ────────────────────────────── -->
+    <div id="historyView" class="hidden">
+      <section class="card" aria-labelledby="history-heading">
+        <h2 class="output-header" id="history-heading">
+          📜 History &amp; Saved Manifestations
+        </h2>
+        <div id="historyContainer">
+          <!-- JS dynamically injects history cards here -->
+        </div>
+      </section>
+    </div><!-- /#historyView -->
+
+    <!-- ── Footer ──────────────────────────────────────────── -->
+    <footer>
+      <p>
+        Mindify &copy; 2026 &mdash; 100% local &amp; private.
+        No data ever leaves your machine.
+      </p>
+    </footer>
+
+  </div><!-- /.wrapper -->
+
+  <!-- Script (deferred so DOM is ready) -->
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</body>
+</html>
