@@ -52,7 +52,13 @@ sia = SentimentIntensityAnalyzer()
 spell = SpellChecker()
 
 # ── spaCy Model Loading with PyTextRank Pipeline Extension ──────────────────
-MODEL_NAME = "en_core_web_md"
+try:
+    import torch
+    torch.set_num_threads(1)
+except Exception:
+    pass
+
+MODEL_NAME = os.environ.get("SPACY_MODEL", "en_core_web_sm")
 
 
 def _load_spacy_model() -> spacy.Language:
