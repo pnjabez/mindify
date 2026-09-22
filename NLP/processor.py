@@ -26,7 +26,6 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.corpus import wordnet
 import pytextrank
-from sentence_transformers import SentenceTransformer
 from spellchecker import SpellChecker
 
 
@@ -88,14 +87,10 @@ def _load_spacy_model() -> spacy.Language:
 
 nlp: spacy.Language = _load_spacy_model()
 
-# ── SentenceTransformer & Scikit-Learn Multi-Label Intent Classifier Loading 
+# ── Scikit-Learn Multi-Label Intent Classifier Loading
 MODEL_PKL_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "intent_classifier.pkl")
 TRANSFORMER_MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "transformer_classifier.pkl")
 LABEL_BINARIZER_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "label_binarizer.pkl")
-
-# Cache SentenceTransformer embedder in memory on startup
-print("[Mindify] Loading SentenceTransformer('all-MiniLM-L6-v2')...", flush=True)
-embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 def _load_intent_model():
@@ -246,16 +241,12 @@ def _predict_intent_ml(goal_sentence_text: str) -> str:
 
 def _predict_multilabel_intents(goal_sentence_text: str) -> tuple[list[str], list[dict[str, float]], list[dict[str, str]]]:
     """
-    Phase 3 (Semantic): Predict intent domains using SentenceTransformer embeddings + Calibrated MultiOutputClassifier.
-    Uses Dynamic Confidence Calibration & Adaptive Margin Thresholding:
-    - Sorts probabilities for all 90 classes in descending order.
-    - Automatically selects primary label (top_1).
-    - Selects secondary label (top_2) ONLY if its probability is within 0.12 of top_1.
-    - Outputs top_intents_with_probabilities for the top 3 predicted categories with exact calibrated confidence.
+    Phase 3 (Semantic): Predict intent domains using TF-IDF pipeline + Calibrated MultiOutputClassifier.
+    Uses Dynamic Confidence Calibration & Adaptive Margin Thresholding.
     """
     try:
-        user_vec = embedder.encode([goal_sentence_text])
-        probs_list = transformer_clf.predict_proba(user_vec)
+        # The pipeline includes TF-IDF — pass raw text directly
+        probs_list = transformer_clf.predict_proba([goal_sentence_text])
 
         classes = label_binarizer.classes_
         class_probs = []
