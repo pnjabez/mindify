@@ -1,5 +1,7 @@
 # 🧠 Mindify – Smart Affirmation & Goal Generator
 
+https://mindify-h43j.onrender.com/
+
 **Mindify** is a 100% local, privacy-first Natural Language Processing (NLP) web application that converts raw goals and manifestations into structured, science-backed affirmations, implementation intentions, micro-actions, and emotional resilience statements.
 
 ---
